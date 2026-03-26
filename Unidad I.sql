@@ -32,10 +32,13 @@ USE LBD2026;
 
 -- Tabla con tipos de datos numéricos
 -- ==================================
-SET @d1 = CAST(0.1 AS DECIMAL); -- se guarda como número exacto (0.1)
+SET @d1 = CAST(0.1 AS DECIMAL(10, 4)); -- se guarda como número exacto (0.1)
 SET @d2 = CAST(0.2 AS DECIMAL(10, 4)); -- se guarda como número exacto (0.2)
 SET @f1 = CAST(0.1 AS FLOAT); -- se guarda en binario, coma flotante (0.10000000149011612 aprox.)
 SET @f2 = CAST(0.2 AS FLOAT);
+
+SELECT 
+	@f1, @f2; -- precisión exacta (se usa para dinero, cantidades, etc)
 
 SELECT 
 	@d1 + @d2 AS suma_decimal, -- precisión exacta (se usa para dinero, cantidades, etc)
@@ -216,16 +219,17 @@ CREATE TABLE IF NOT EXISTS Tabla6 (
 ) ENGINE=INNODB;
 
 INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca1', 'Small'); -- posición = 1
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca1', 'Medium'); -- posición = 2
 INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca2', 'Medium'); -- posición = 2
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca3', 'Small'); -- posición = 1
 INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca3', 'Medium'); -- posición = 2
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca3', 'Large'); -- posición = 3
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca3', 'large'); -- valor válido, posición = 3
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca3', NULL); -- valor válido, posición = NULL
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca3', ''); -- valor inválido, posición = 0 (modo estricto debe estar deshabilitado. Se habilita mediante el archivo my.ini)
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca4', 'Otro valor'); -- valor inválido
-INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca1', 0); -- posición = 1
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca4', 'Small'); -- posición = 1
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca5', 'Medium'); -- posición = 2
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca6', 'Large'); -- posición = 3
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca7', 'large'); -- valor válido, posición = 3
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca8', NULL); -- valor válido, posición = NULL
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca9', ''); -- valor inválido, posición = 0 (modo estricto debe estar deshabilitado. Se habilita mediante el archivo my.ini)
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca10', 'Otro valor'); -- valor inválido
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca11', 0); -- valor inválido
+INSERT INTO Tabla6 (marca, tamanio) VALUES ('Marca12', 1); -- posición = 1
 -- Si la columna tamanio se hubiera declarado como VARCHAR, 
 -- insertar un millón de filas con el valor ‘medium’ requeriría 6 millones de bytes
 -- Al declararse como ENUM se requieren 1 millón
@@ -254,6 +258,8 @@ INSERT INTO Tabla7 (idAlumno, turnos) VALUES (6, 'Turno1,Turno2,Turno3,Turno3');
 INSERT INTO Tabla7 (idAlumno, turnos) VALUES (7, ''); -- valor válido
 INSERT INTO Tabla7 (idAlumno, turnos) VALUES (8, 'Turno1,Turno2,Turno3,Turno4'); -- valor inválido
 INSERT INTO Tabla7 (idAlumno, turnos) VALUES (9, 'Turno4'); -- valor inválido
+
+INSERT INTO Tabla7 (idAlumno, turnos) VALUES (10, 1); 
 
 SELECT * FROM Tabla7;
 
