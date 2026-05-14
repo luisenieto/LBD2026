@@ -1499,12 +1499,12 @@ WHERE idProducto = 1;
 -- Múltiples tablas - Combinación de varios resultsets
 
 SELECT idProducto, nombre, Marca, Categoria, Atributo, Valor FROM
-((SELECT ProductosJSON.idProducto, ProductosJSON.nombre, Marcas.nombre AS 'Marca', Categorias.nombre AS 'Categoria', TablaJSON1.Atributo, 
-CASE TablaJSON1.Valor
+((SELECT ProductosJSON.idProducto, ProductosJSON.nombre, Marcas.nombre AS 'Marca', Categorias.nombre AS 'Categoria', TablaJSON.Atributo, 
+CASE TablaJSON.Valor
 	WHEN 'null' THEN NULL
-    ELSE TablaJSON1.Valor
+    ELSE TablaJSON.Valor
 END AS 'Valor',
-TablaJSON1.idAtributo, TablaJSON1.idAtributoPadre
+TablaJSON.idAtributo, TablaJSON.idAtributoPadre
 FROM ProductosJSON JOIN Categorias
 ON ProductosJSON.idCategoria = Categorias.idCategoria
 JOIN Marcas
@@ -1514,17 +1514,17 @@ JSON_TABLE(atributos, '$[*]' COLUMNS (
     Valor VARCHAR(50) PATH '$.Valor',
     idAtributo INT PATH '$.idAtributo',
     idAtributoPadre INT PATH '$.idAtributoPadre')
-) AS TablaJSON1
+) AS TablaJSON
 WHERE Valor IS NOT NULL)
 
 UNION
 
-(SELECT ProductosJSON.idProducto, ProductosJSON.nombre, Marcas.nombre AS 'Marca', Categorias.nombre AS 'Categoría', TablaJSON2.Atributo, 
-CASE TablaJSON2.Valor
+(SELECT ProductosJSON.idProducto, ProductosJSON.nombre, Marcas.nombre AS 'Marca', Categorias.nombre AS 'Categoría', TablaJSON.Atributo, 
+CASE TablaJSON.Valor
 	WHEN 'null' THEN NULL
-    ELSE TablaJSON2.Valor
+    ELSE TablaJSON.Valor
 END AS 'Valor',
-TablaJSON2.idAtributo, TablaJSON2.idAtributoPadre
+TablaJSON.idAtributo, TablaJSON.idAtributoPadre
 FROM ProductosJSON JOIN Categorias
 ON ProductosJSON.idCategoria = Categorias.idCategoria
 JOIN Marcas
@@ -1534,8 +1534,30 @@ JSON_TABLE(atributos, '$[*]' COLUMNS (
     NESTED PATH '$.Valor[*]' COLUMNS (Valor VARCHAR(50) PATH '$'),
     idAtributo INT PATH '$.idAtributo',
     idAtributoPadre INT PATH '$.idAtributoPadre')
-) AS TablaJSON2
-WHERE Valor IS NOT NULL)) AS T 
+) AS TablaJSON
+WHERE Valor IS NOT NULL)
+
+UNION
+
+(SELECT ProductosJSON.idProducto, ProductosJSON.nombre, Marcas.nombre AS 'Marca', Categorias.nombre AS 'Categoria', TablaJSON.Atributo, 
+CASE TablaJSON.Valor
+	WHEN 'null' THEN NULL
+    ELSE TablaJSON.Valor
+END AS 'Valor',
+TablaJSON.idAtributo, TablaJSON.idAtributoPadre
+FROM ProductosJSON JOIN Categorias
+ON ProductosJSON.idCategoria = Categorias.idCategoria
+JOIN Marcas
+ON ProductosJSON.idMarca = Marcas.idMarca,  
+JSON_TABLE(atributos, '$[*]' COLUMNS (
+	Atributo VARCHAR(50) PATH '$.Atributo',
+    Valor VARCHAR(50) PATH '$.Valor' DEFAULT '222' ON ERROR,
+    idAtributo INT PATH '$.idAtributo',
+    idAtributoPadre INT PATH '$.idAtributoPadre')
+) AS TablaJSON
+WHERE Valor IS NULL)
+
+) AS T 
 ORDER BY T.idProducto, COALESCE(T.idAtributoPadre, T.idAtributo), T.idAtributoPadre, T.Atributo, T.Valor;
 
 
@@ -1587,15 +1609,15 @@ WHERE EXISTS (SELECT * FROM Productos P WHERE M.idMarca = P.idMarca);
 
 -- Técnicas avanzadas - Inserción de filas basadas en otras tablas
 
-CREATE TABLE IF NOT EXISTS Personas1 LIKE Personas;
+CREATE TABLE IF NOT EXISTS Cargos1 LIKE Cargos;
 
-INSERT INTO Personas1
-SELECT dni, apellidos, SUBSTRING(nombres, 1, 3)
-FROM Personas;
+INSERT INTO Cargos1
+SELECT idcargo, SUBSTRING(cargo, 1, 3)
+FROM Cargos;
 
-SELECT * FROM Personas1;
+SELECT * FROM Cargos1;
 
-DROP TABLE IF EXISTS Personas1;
+DROP TABLE IF EXISTS Cargos1;
 
 
 -- Técnicas avanzadas - Modificación y borrado de filas basadas en otras tablas 
