@@ -490,7 +490,7 @@ INSERT INTO V_Empleados_Sales_Representative_Ms VALUES (11, 'Viver', 'Jane', 'Sa
 SELECT * FROM V_Empleados_Sales_Representative_Ms;
 -- 1, 3, 9 y 10
 
-INSERT INTO V_Empleados_Sales_Representative_Ms VALUES (11, 'Viver', 'Jane', 'SSales Representative', 'Mr.', '1966-01-27 00:00:00', '1994-11-15 00:00:00', '7 Houndstooth Rd.', 'London', NULL, 'WG2 7LT', 'UK', '(71) 555-4444', '452', 'Anne has a BA degree in English from St. Lawrence College.  She is fluent in French and German.', '5', 'http://accweb/emmployees/davolio.bmp');
+INSERT INTO V_Empleados_Sales_Representative_Ms VALUES (11, 'Viver', 'Jane', 'Sales Representative', 'Mr.', '1966-01-27 00:00:00', '1994-11-15 00:00:00', '7 Houndstooth Rd.', 'London', NULL, 'WG2 7LT', 'UK', '(71) 555-4444', '452', 'Anne has a BA degree in English from St. Lawrence College.  She is fluent in French and German.', '5', 'http://accweb/emmployees/davolio.bmp');
 -- No cumple con:
 -- TituloDeCortesia = 'Ms.'
 
